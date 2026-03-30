@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Import User - NNPTUD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 10px;
+        }
+
+        .file-input-label:hover {
+            background: #f0f2ff;
+            border-color: #764ba2;
+        }
+
+        .file-input-label.drag-over {
+            background: #e8ebff;
+            border-color: #764ba2;
+        }
+
+        .file-name {
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+            display: block;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+            display: block;
+        }
+
+        .result.info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+            display: block;
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .result p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .result pre {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .stat {
+            display: inline-block;
+            margin-right: 20px;
+            margin-top: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+            display: block;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tips {
+            background: #fffbea;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .tips strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #745e3a;
+        }
+
+        .tips ul {
+            margin-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Import User từ Excel</h1>
+            <p>NNPTUD - Hệ thống quản lý người dùng</p>
+        </div>
+
+        <form id="importForm">
+            <div class="form-group">
+                <label for="excelFile">📁 Chọn file Excel</label>
+                <div class="file-input-wrapper">
+                    <input 
+                        type="file" 
+                        id="excelFile" 
+                        accept=".xlsx,.xls"
+                        required
+                    >
+                    <label for="excelFile" class="file-input-label">
+                        <span>📊 Chọn file hoặc kéo vào đây</span>
+                        <span>(.xlsx, .xls)</span>
+                    </label>
+                    <div class="file-name" id="fileName"></div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="importBtn">
+                    📤 Import Users
+                </button>
+                <button type="button" class="btn btn-secondary" id="sampleBtn">
+                    📥 Tải File Mẫu
+                </button>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Đang xử lý... vui lòng chờ</p>
+        </div>
+
+        <div class="result" id="result"></div>
+
+        <div class="tips">
+            <strong>💡 Mẹo:</strong>
+            <ul>
+                <li>Click "Tải File Mẫu" để lấy template Excel</li>
+                <li>Điền username và email (bắt buộc)</li>
+                <li>Password sẽ tự sinh 16 ký tự + gửi email</li>
+                <li>Tối đa 5MB, hỗ trợ .xlsx và .xls</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('importForm');
+        const fileInput = document.getElementById('excelFile');
+        const fileNameDiv = document.getElementById('fileName');
+        const importBtn = document.getElementById('importBtn');
+        const sampleBtn = document.getElementById('sampleBtn');
+        const resultDiv = document.getElementById('result');
+        const loadingDiv = document.getElementById('loading');
+        const fileLabel = document.querySelector('.file-input-label');
+
+        // Hiển thị tên file
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileNameDiv.textContent = '✅ ' + e.target.files[0].name;
+                fileLabel.style.borderColor = '#28a745';
+                fileLabel.style.background = '#f0fdf4';
+            }
+        });
+
+        // Drag & drop
+        fileLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileLabel.classList.add('drag-over');
+        });
+
+        fileLabel.addEventListener('dragleave', () => {
+            fileLabel.classList.remove('drag-over');
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileLabel.classList.remove('drag-over');
+            fileInput.files = e.dataTransfer.files;
+            fileNameDiv.textContent = '✅ ' + e.dataTransfer.files[0].name;
+            fileLabel.style.borderColor = '#28a745';
+            fileLabel.style.background = '#f0fdf4';
+        });
+
+        // Tải file mẫu
+        sampleBtn.addEventListener('click', async () => {
+            try {
+                sampleBtn.disabled = true;
+                sampleBtn.textContent = '⏳ Đang tải...';
+                
+                const response = await fetch('/import-users/sample');
+                const blob = await response.blob();
+                
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'sample-users.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                showResult('success', '✅ Tải file mẫu thành công!');
+            } catch (error) {
+                showResult('error', '❌ Lỗi: ' + error.message);
+            } finally {
+                sampleBtn.disabled = false;
+                sampleBtn.textContent = '📥 Tải File Mẫu';
+            }
+        });
+
+        // Submit form
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!fileInput.files.length) {
+                showResult('error', '❌ Vui lòng chọn file Excel');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            
+            // Kiểm tra kích thước file
+            if (file.size > 5 * 1024 * 1024) {
+                showResult('error', '❌ File quá lớn! Tối đa 5MB');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('excelFile', file);
+
+            try {
+                loadingDiv.style.display = 'block';
+                importBtn.disabled = true;
+                resultDiv.style.display = 'none';
+
+                const response = await fetch('/import-users/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    let html = `
+                        <h3>✅ Import Thành Công!</h3>
+                        <div>
+                            <div class="stat">
+                                <span class="stat-label">Tổng User</span>
+                                <span class="stat-value">${data.data.total}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Thành Công</span>
+                                <span class="stat-value" style="color: #28a745;">${data.data.successCount}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Thất Bại</span>
+                                <span class="stat-value" style="color: #dc3545;">${data.data.failedCount}</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Tỉ Lệ Thành Công</span>
+                                <span class="stat-value">${data.data.successRate}</span>
+                            </div>
+                        </div>
+                    `;
+
+                    if (data.data.successList.length > 0) {
+                        html += '<h4 style="margin-top: 20px; margin-bottom: 10px;">✅ User Được Tạo:</h4>';
+                        data.data.successList.forEach((user, i) => {
+                            html += `<p>• ${user.username} (${user.email})</p>`;
+                        });
+                    }
+
+                    if (data.data.failedList.length > 0) {
+                        html += '<h4 style="margin-top: 20px; margin-bottom: 10px; color: #dc3545;">❌ User Thất Bại:</h4>';
+                        data.data.failedList.forEach((item) => {
+                            html += `<p>• ${item.username} (${item.email}) - ${item.error}</p>`;
+                        });
+                    }
+
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = html;
+                } else {
+                    showResult('error', '❌ ' + data.message);
+                }
+            } catch (error) {
+                showResult('error', '❌ Lỗi: ' + error.message);
+            } finally {
+                loadingDiv.style.display = 'none';
+                importBtn.disabled = false;
+            }
+        });
+
+        function showResult(type, message) {
+            resultDiv.className = 'result ' + type;
+            resultDiv.innerHTML = `<p>${message}</p>`;
+        }
+    </script>
+</body>
+</html>
